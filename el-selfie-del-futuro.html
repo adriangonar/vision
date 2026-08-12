@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>El Selfie del Futuro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,600;0,900;1,500;1,700&family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --dusk:#1A1423;
+    --dusk-2:#241B33;
+    --paper:#FDF8F0;
+    --paper-shadow:#e8dfcd;
+    --amber:#F2994A;
+    --amber-deep:#D9782E;
+    --lavender:#C084B5;
+    --ink:#241B2F;
+    --ink-soft:#5B4E68;
+    --text-onDark:#F5EFE6;
+    --text-onDark-soft:#B6A9C4;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    min-height:100vh;
+    background:
+      radial-gradient(ellipse at 30% -10%, #35234a 0%, transparent 55%),
+      radial-gradient(ellipse at 90% 110%, #2a1a3d 0%, transparent 50%),
+      var(--dusk);
+    font-family:'Space Grotesk',sans-serif;
+    color:var(--text-onDark);
+    display:flex;
+    justify-content:center;
+    padding:36px 16px 60px;
+  }
+  .wrap{
+    width:100%;
+    max-width:460px;
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    color:var(--lavender);
+    text-align:center;
+    margin-bottom:8px;
+  }
+  h1.title{
+    font-family:'Fraunces',serif;
+    font-style:italic;
+    font-weight:700;
+    font-size:32px;
+    text-align:center;
+    margin:0 0 6px;
+    line-height:1.1;
+  }
+  .subtitle{
+    text-align:center;
+    font-size:13.5px;
+    color:var(--text-onDark-soft);
+    margin:0 0 28px;
+    line-height:1.5;
+    padding:0 10px;
+  }
+
+  /* Polaroid */
+  .polaroid-stage{
+    display:flex;
+    justify-content:center;
+    margin-bottom:30px;
+    perspective:800px;
+  }
+  .polaroid{
+    background:var(--paper);
+    width:280px;
+    padding:16px 16px 26px;
+    border-radius:2px;
+    box-shadow:0 22px 40px -14px rgba(0,0,0,.55), 0 2px 0 rgba(255,255,255,.04) inset;
+    transform:rotate(-2.5deg);
+    transition:transform .4s ease;
+  }
+  .polaroid:hover{transform:rotate(-1deg) scale(1.015);}
+  .photo-area{
+    background:linear-gradient(155deg,#3d2a52,#5c3a68 45%,#8a5a63 75%,#e0985f);
+    aspect-ratio:1/1;
+    border-radius:1px;
+    position:relative;
+    overflow:hidden;
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+  }
+  .photo-area::before{
+    content:'';
+    position:absolute;
+    inset:0;
+    background:radial-gradient(circle at 50% 30%, rgba(255,214,150,.35), transparent 60%);
+  }
+  .photo-figure{
+    font-size:64px;
+    margin-bottom:10px;
+    filter:drop-shadow(0 6px 10px rgba(0,0,0,.35));
+    z-index:1;
+  }
+  .flash{
+    position:absolute;
+    inset:0;
+    background:#fff;
+    opacity:0;
+    pointer-events:none;
+  }
+  .caption{
+    font-family:'Fraunces',serif;
+    font-style:italic;
+    font-size:14.5px;
+    color:var(--ink);
+    line-height:1.55;
+    margin-top:16px;
+    min-height:70px;
+  }
+  .caption .placeholder{color:#b8ab98;}
+  .caption .filled-em{color:var(--amber-deep);font-weight:700;font-style:normal;}
+  .date-stamp{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:9.5px;
+    color:#b09a5f;
+    text-align:right;
+    margin-top:8px;
+    letter-spacing:.05em;
+  }
+
+  /* Form */
+  .card{
+    background:var(--dusk-2);
+    border:1px solid #382a4c;
+    border-radius:16px;
+    padding:20px;
+    margin-bottom:14px;
+  }
+  .prompt-label{
+    display:flex;
+    align-items:baseline;
+    gap:8px;
+    margin-bottom:8px;
+  }
+  .prompt-num{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    color:var(--amber);
+  }
+  .prompt-label h3{
+    margin:0;
+    font-size:14.5px;
+    font-weight:600;
+  }
+  .prompt-sub{
+    font-size:12px;
+    color:var(--text-onDark-soft);
+    margin:0 0 10px;
+  }
+  textarea{
+    width:100%;
+    background:#170f22;
+    border:1px solid #3a2c50;
+    border-radius:10px;
+    color:var(--text-onDark);
+    font-family:'Space Grotesk',sans-serif;
+    font-size:14px;
+    padding:10px 12px;
+    resize:none;
+    min-height:44px;
+    outline:none;
+    transition:border-color .2s ease;
+  }
+  textarea:focus{border-color:var(--amber);}
+  textarea::placeholder{color:#5c4e73;}
+
+  .reveal-btn{
+    width:100%;
+    background:linear-gradient(135deg,var(--amber),var(--amber-deep));
+    color:#1A1423;
+    border:none;
+    border-radius:12px;
+    padding:14px;
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:14.5px;
+    cursor:pointer;
+    margin-top:4px;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .reveal-btn:active{transform:scale(.98);}
+  .reveal-btn:disabled{
+    background:#3a2c50;
+    color:#6c5d84;
+    cursor:not-allowed;
+  }
+
+  .connection{
+    display:none;
+    opacity:0;
+    transform:translateY(8px);
+    transition:opacity .5s ease, transform .5s ease;
+  }
+  .connection.show{display:block;opacity:1;transform:translateY(0);}
+  .connection-intro{
+    font-family:'Fraunces',serif;
+    font-style:italic;
+    font-size:15px;
+    line-height:1.55;
+    color:var(--text-onDark);
+    margin-bottom:16px;
+    text-align:center;
+    padding:0 6px;
+  }
+  .pillar{
+    display:flex;
+    gap:12px;
+    padding:12px 4px;
+    border-top:1px solid #382a4c;
+  }
+  .pillar:first-of-type{border-top:none;}
+  .pillar-icon{font-size:20px;flex-shrink:0;width:26px;text-align:center;}
+  .pillar-text h4{
+    margin:0 0 2px;
+    font-size:13.5px;
+    font-weight:600;
+    color:var(--lavender);
+  }
+  .pillar-text p{
+    margin:0;
+    font-size:12.5px;
+    color:var(--text-onDark-soft);
+    line-height:1.45;
+  }
+
+  .final-question{
+    text-align:center;
+    font-family:'Fraunces',serif;
+    font-style:italic;
+    font-size:16.5px;
+    line-height:1.5;
+    margin:26px 0 18px;
+    color:var(--amber);
+    padding:0 8px;
+  }
+
+  .vision-pin{
+    background:var(--paper);
+    color:var(--ink);
+    border-radius:12px;
+    padding:16px 18px;
+    font-size:12.5px;
+    line-height:1.6;
+  }
+  .vision-pin .pin-label{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--amber-deep);
+    margin-bottom:6px;
+    display:block;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">Actividad · 3 minutos</div>
+  <h1 class="title">El selfie del futuro</h1>
+  <p class="subtitle">Dentro de un año, esta es la mejor foto que podrías hacerte en esta iglesia. Escribe el pie de foto antes de sacarla.</p>
+
+  <div class="polaroid-stage">
+    <div class="polaroid">
+      <div class="photo-area">
+        <div class="flash" id="flash"></div>
+        <div class="photo-figure">🤳</div>
+      </div>
+      <div class="caption" id="captionText">
+        <span class="placeholder">Tu pie de foto aparecerá aquí a medida que escribas…</span>
+      </div>
+      <div class="date-stamp" id="dateStamp"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="prompt-label"><span class="prompt-num">01</span><h3>La foto</h3></div>
+    <p class="prompt-sub">¿Cómo te gustaría que te trataran para que esa foto fuera real?</p>
+    <textarea id="p1" placeholder="Escribe aquí…" rows="2"></textarea>
+  </div>
+
+  <div class="card">
+    <div class="prompt-label"><span class="prompt-num">02</span><h3>El comentario</h3></div>
+    <p class="prompt-sub">¿Qué te gustaría haber aprendido o vivido para entonces?</p>
+    <textarea id="p2" placeholder="Escribe aquí…" rows="2"></textarea>
+  </div>
+
+  <div class="card">
+    <div class="prompt-label"><span class="prompt-num">03</span><h3>La etiqueta</h3></div>
+    <p class="prompt-sub">¿A quién te gustaría estar ayudando tú en esa foto?</p>
+    <textarea id="p3" placeholder="Escribe aquí…" rows="2"></textarea>
+  </div>
+
+  <button class="reveal-btn" id="revealBtn" disabled>📸 Publicar y ver la conexión</button>
+
+  <div class="connection" id="connection">
+    <div class="card" style="margin-top:18px;">
+      <p class="connection-intro">Fijaos en algo curioso: seguramente muchos habéis hablado de sentiros cuidados, de crecer, de tener relaciones reales, de ayudar a otros. Eso no es casualidad — es el corazón de nuestra visión.</p>
+
+      <div class="pillar">
+        <div class="pillar-icon">🫂</div>
+        <div class="pillar-text"><h4>Pastoral relacional</h4><p>eso de sentirte cuidado, no solo contado en una lista</p></div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-icon">✝️</div>
+        <div class="pillar-text"><h4>Fe, esperanza y amor</h4><p>llevar a Cristo a tu vida y a la de otros</p></div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-icon">👀</div>
+        <div class="pillar-text"><h4>Que ninguno se pierda</h4><p>estar atentos, que nadie desaparezca</p></div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-icon">🌱</div>
+        <div class="pillar-text"><h4>Siendo, haciendo, equipando, plantando</h4><p>crecer y ayudar a crecer a otros</p></div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-icon">🔗</div>
+        <div class="pillar-text"><h4>Células de amistad</h4><p>todo esto se vive en relaciones reales, como esta</p></div>
+      </div>
+    </div>
+
+    <p class="final-question">De esas tres cosas que has escrito, ¿cuál podrías empezar a vivir tú desde esta misma semana?</p>
+
+    <div class="vision-pin">
+      <span class="pin-label">📌 Visión completa</span>
+      Somos una iglesia con una visión pastoral relacional, que vivimos la misión en fe, esperanza y amor a las naciones, para que todos sean pastoreados y que ninguno se pierda, siendo, haciendo, equipando y plantando discípulos a través de las relaciones en células de amistad. Esta es nuestra visión y propósito.
+    </div>
+  </div>
+</div>
+
+<script>
+const p1 = document.getElementById('p1');
+const p2 = document.getElementById('p2');
+const p3 = document.getElementById('p3');
+const captionText = document.getElementById('captionText');
+const revealBtn = document.getElementById('revealBtn');
+const connection = document.getElementById('connection');
+const flash = document.getElementById('flash');
+const dateStamp = document.getElementById('dateStamp');
+
+function futureDate(){
+  const d = new Date();
+  d.setFullYear(d.getFullYear() + 1);
+  const opts = { day:'numeric', month:'short', year:'numeric' };
+  return d.toLocaleDateString('es-ES', opts);
+}
+dateStamp.textContent = futureDate();
+
+function updateCaption(){
+  const v1 = p1.value.trim();
+  const v2 = p2.value.trim();
+  const v3 = p3.value.trim();
+
+  if(!v1 && !v2 && !v3){
+    captionText.innerHTML = '<span class="placeholder">Tu pie de foto aparecerá aquí a medida que escribas…</span>';
+    revealBtn.disabled = true;
+    return;
+  }
+
+  let html = '';
+  if(v1) html += `Me tratan con <span class="filled-em">${escapeHtml(v1)}</span>. `;
+  if(v2) html += `He aprendido a <span class="filled-em">${escapeHtml(v2)}</span>. `;
+  if(v3) html += `Y estoy ayudando a <span class="filled-em">${escapeHtml(v3)}</span>.`;
+  captionText.innerHTML = html || '<span class="placeholder">Tu pie de foto aparecerá aquí a medida que escribas…</span>';
+
+  revealBtn.disabled = !(v1 && v2 && v3);
+}
+
+function escapeHtml(str){
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
+
+[p1,p2,p3].forEach(el => el.addEventListener('input', updateCaption));
+
+revealBtn.addEventListener('click', () => {
+  flash.style.transition = 'none';
+  flash.style.opacity = '0.9';
+  requestAnimationFrame(() => {
+    flash.style.transition = 'opacity .5s ease';
+    flash.style.opacity = '0';
+  });
+  connection.classList.add('show');
+  setTimeout(() => connection.scrollIntoView({behavior:'smooth', block:'start'}), 200);
+});
+</script>
+</body>
+</html>
